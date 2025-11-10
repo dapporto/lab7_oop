@@ -12,19 +12,32 @@ public class IterableWithPolicyImpl<T> implements IterableWithPolicy<T> {
     private final List<T> list = new ArrayList<>();
 
     public IterableWithPolicyImpl(List<T> elem){
-        for (T t : elem) {
-            this.list.add(t);
+        this.list.addAll(elem);
+    }
+
+    private class Inner implements Iterator<T>{
+
+        private int current = 0;
+
+        @Override
+        public boolean hasNext() {
+            return current < list.size(); 
+        }
+
+        @Override
+        public T next() {
+            return list.get(current++);
         }
     }
 
     @Override
-    public Iterator iterator() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'iterator'");
+    public Iterator<T> iterator() {
+        return new Inner();
     }
 
     @Override
     public void setIterationPolicy(Predicate filter) {
     }
+
 
 }
