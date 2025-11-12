@@ -4,8 +4,13 @@ import it.unibo.bank.api.AccountHolder;
 import it.unibo.bank.api.BankAccount;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
+
+import java.lang.reflect.Method;
 
 /**
  * Test class for the {@link StrictBankAccount} class.
@@ -21,7 +26,8 @@ class TestStrictBankAccount {
      */
     @BeforeEach
     public void setUp() {
-        fail("To be implemented");
+        this.mRossi = new AccountHolder("Mario", "Rossi", 1);
+        this.bankAccount = new StrictBankAccount(mRossi, 0.0);
     }
 
     /**
@@ -29,7 +35,9 @@ class TestStrictBankAccount {
      */
     @Test
     public void testInitialization() {
-        fail("To be implemented");
+        assertEquals(0.0, this.bankAccount.getBalance());
+        assertEquals(this.mRossi, bankAccount.getAccountHolder());
+        assertEquals(0, bankAccount.getTransactionsCount());
     }
 
     /**
@@ -37,7 +45,9 @@ class TestStrictBankAccount {
      */
     @Test
     public void testManagementFees() {
-        fail("To be implemented");
+        this.bankAccount.deposit(1, 100);
+        this.bankAccount.chargeManagementFees(1);
+        assertEquals(94.9, this.bankAccount.getBalance());
     }
 
     /**
@@ -45,14 +55,23 @@ class TestStrictBankAccount {
      */
     @Test
     public void testNegativeWithdraw() {
-        fail("To be implemented");
+        assertThrows(IllegalArgumentException.class, new Executable() {
+            @Override
+            public void execute() throws Throwable {
+                TestStrictBankAccount.this.bankAccount.withdraw(1, -1);
+            }
+        });
     }
-
     /**
      * Test that withdrawing more money than it is in the account is not allowed.
      */
     @Test
     public void testWithdrawingTooMuch() {
-        fail("To be implemented");
+        assertThrows(IllegalArgumentException.class, new Executable() {
+            @Override
+            public void execute() throws Throwable {
+                TestStrictBankAccount.this.bankAccount.withdraw(1, 100);
+            }
+        });
     }
 }
